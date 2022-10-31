@@ -28,12 +28,19 @@ function build_array() {
         }
     }
 
-    console.log(arr);
     return arr;
 }
 
 function calc_time(day, hour, minute) {
     return  (day - start_day) * 24 * 60 + hour * 60 + minute;
+}
+
+function date_from_time(time) {
+    let day_offset = Math.floor(time / (24 * 60));
+    let hour = Math.floor((time - (day_offset * 60 * 24)) / 60);
+    let minute = Math.floor((time - (day_offset * 60 * 24))) - Math.floor(hour) * 60;
+
+    return {"day": day_offset + start_day, "hour": hour, "minute": minute};
 }
 
 function interval(arr, time) {
@@ -78,22 +85,56 @@ function calc_status(day) {
     }
 
 }
-
-function get_now_data(arr) {
-    let date = new Date();
-    let time = calc_time(date.getDate() - 15, date.getHours(), date.getMinutes());
+    
+function get_data_time(arr, time) {
 
     let data = interval(arr, time);
     let height = calc_height(arr, time, easeInOutQuad);
 
     data['time'] = time;
     data['height'] = height[0];
-    data['date'] = `${date.getDate()} de Novembro, ${date.getHours()}:${date.getMinutes()}`;
     data['derivative'] = height[1] ? -1 : 1;
+    data['derivative'] = height[1] ? -1 : 1;
+    data['date'] = date_from_time(time);
 
     return data;
 }
 
+function get_now_data(arr) {
+    let date = new Date();
+    let time = calc_time(date.getDate() - 20, date.getHours(), date.getMinutes());
 
-const built = build_array();
-console.log(get_now_data(built));
+    let data = get_data_time(arr, time);
+
+    return data;
+}
+
+(function(window, document){
+
+    window.onload = main;
+
+    const built = build_array();
+    console.log(get_now_data(built));
+
+    function main() {
+
+        let rangeInput = document.getElementById("myRange");
+        let currentday = document.getElementById("currentday");
+        let waterlevel = document.getElementById("wlevel");
+        let debug= document.getElementById("debug");
+
+        currentday.textContent = rangeInput.value;
+
+        rangeInput.addEventListener('mousemove', function() {
+            currentday.textContent = this.value;
+            let data = get_data_time(built, currentday.textContent);
+            debug.textContent = JSON.stringify(data);
+
+            waterlevel.style.height = (1 - data['height']) * 100 + '%';
+        });
+    }
+
+})(window, document);
+
+
+
