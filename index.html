@@ -5,20 +5,32 @@
     </head>
 
     <body>
-        hey there general kenobi
-        <div class="slidercontainer">
-            <input type="range" min="0" max="8000" value="50" class="slider" id="myRange">
-        </div>
-
-        <div id="currentday"> aaa </div>
         <code>
-            <div id="debug"></div>
-        </code>
-
-        <div class="watercontainer">
-            <div class="water" id="wlevel">
+            <div class="slidercontainer">
+                <input type="range" min="0" max="15000" value="50" class="slider" id="myRange">
             </div>
-        </div>
+            <div id="currentday"> aaa </div>
+
+            <div class="watercontainer" id="wcontainer">
+                <div class="water" id="wlevel">
+                </div>
+            </div>
+
+            <div class="infobig" id="before" hidden="true">
+                <p> A viagem ainda nao comecou </p>
+            </div>
+
+            <div class="infobig" id="after" hidden="true">
+                <p> A viagem ja terminou </p>
+            </div>
+
+            <div class="infobig" id="time">
+                <p> </p>
+            </div>
+
+            <div id="debug"></div>
+
+        </code>
 
     </body>
 </html>

@@ -32,7 +32,7 @@ function build_array() {
 }
 
 function calc_time(day, hour, minute) {
-    return  (day - start_day) * 24 * 60 + hour * 60 + minute;
+    return (day - start_day) * 24 * 60 + hour * 60 + minute;
 }
 
 function date_from_time(time) {
@@ -40,22 +40,22 @@ function date_from_time(time) {
     let hour = Math.floor((time - (day_offset * 60 * 24)) / 60);
     let minute = Math.floor((time - (day_offset * 60 * 24))) - Math.floor(hour) * 60;
 
-    return {"day": day_offset + start_day, "hour": hour, "minute": minute};
+    return { "day": day_offset + start_day, "hour": hour, "minute": minute };
 }
 
 function interval(arr, time) {
     if (time < 0) {
-        return {'inside': false};
+        return { 'inside': false };
     }
 
     // I know I should do a binary search here, but the data is too small.
     for (let i = 1; i < arr.length - 1; i++) {
-        if (time <= arr[i][1] && time > arr[i-1][1]) {
-            return {'inside': true, 'interval': [arr[i-1], arr[i]]};
+        if (time <= arr[i][1] && time > arr[i - 1][1]) {
+            return { 'inside': true, 'interval': [arr[i - 1], arr[i]] };
         }
     }
 
-    return {'inside': false};
+    return { 'inside': false };
 }
 
 function calc_height(arr, time, easing) {
@@ -78,14 +78,14 @@ function calc_height(arr, time, easing) {
 function calc_status(day) {
     if (day < 11) {
         return 'before';
-    } else if(day < 16) {
+    } else if (day < 16) {
         return 'during';
     } else {
         return 'after';
     }
 
 }
-    
+
 function get_data_time(arr, time) {
 
     let data = interval(arr, time);
@@ -96,6 +96,7 @@ function get_data_time(arr, time) {
     data['derivative'] = height[1] ? -1 : 1;
     data['derivative'] = height[1] ? -1 : 1;
     data['date'] = date_from_time(time);
+    data['status'] = calc_status(date_from_time(time)['day']);
 
     return data;
 }
@@ -109,30 +110,52 @@ function get_now_data(arr) {
     return data;
 }
 
-(function(window, document){
+(function(window, document) {
 
     window.onload = main;
 
     const built = build_array();
-    console.log(get_now_data(built));
+    //console.log(get_now_data(built));
 
     function main() {
 
         let rangeInput = document.getElementById("myRange");
         let currentday = document.getElementById("currentday");
         let waterlevel = document.getElementById("wlevel");
-        let debug= document.getElementById("debug");
+        let allwater = document.getElementById("wcontainer");
+        let debug = document.getElementById("debug");
 
-        currentday.textContent = rangeInput.value;
+        let before = document.getElementById("before");
+        let after = document.getElementById("after");
+        let timebox = document.getElementById("time");
 
-        rangeInput.addEventListener('mousemove', function() {
-            currentday.textContent = this.value;
+        const update = (time) => {
+            currentday.textContent = time;
             let data = get_data_time(built, currentday.textContent);
             debug.textContent = JSON.stringify(data);
 
             waterlevel.style.height = (1 - data['height']) * 100 + '%';
+
+            allwater.hidden = (data['status'] != 'during') || (!data['inside']);
+            before.hidden = data['status'] != 'before';
+            after.hidden = data['status'] != 'after';
+
+            timebox.textContent = `Dia ${data['date']['day']}, ${data['date']['hour']}:${data['date']['minute']}`;
+        };
+
+        currentday.textContent = rangeInput.value;
+
+        rangeInput.addEventListener('change', function() {
+            update(this.value);
         });
+
+        const interval = setInterval(function() {
+            const val = rangeInput.value;
+            rangeInput.value = parseFloat(val) + 1;
+            update(val);
+        }, 10 * 1);
     }
+
 
 })(window, document);
 
