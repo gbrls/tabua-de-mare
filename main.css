@@ -1,16 +1,58 @@
 * {
-    background-color: gray;
+    background-color: black;
+    color: white;
+    font-family: sans;
+    font-size: 1.3em;
 }
 
 .watercontainer {
-    height: 400px;
-    width: 400px;
+    height: 60vh;
+    width: 90vw;
     border: 2px solid black;
     background: darkblue;
+    position: absolute;
+    top: 15vh;
 }
 
 .water {
     width: 100%;
     height: 70%;
     background: whitesmoke;
+}
+
+img {
+    height: 10vh;
+    z-index: 10;
+    position: absolute;
+    top: 15vh;
+    background-color: transparent;
+    animation:wobble 2s linear infinite;
+}
+
+@keyframes wobble { 
+
+    0% { 
+        transform-origin: center;
+        -webkit-transform: rotate(0deg); 
+        transform:rotate(0deg); 
+    } 
+
+    33% { 
+        transform-origin: center;
+        -webkit-transform: rotate(-30deg); 
+        transform:rotate(-30deg); 
+    } 
+
+    66% { 
+        transform-origin: center;
+        -webkit-transform: rotate(30deg); 
+        transform:rotate(30deg); 
+    } 
+
+
+    100% { 
+        transform-origin: center;
+        -webkit-transform: rotate(0deg); 
+        transform:rotate(0deg); 
+    } 
 }
