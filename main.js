@@ -103,7 +103,7 @@ function get_data_time(arr, time) {
 
 function get_now_data(arr) {
     let date = new Date();
-    let time = calc_time(date.getDate() - 20, date.getHours(), date.getMinutes());
+    let time = calc_time(date.getDate(), date.getHours(), date.getMinutes());
 
     let data = get_data_time(arr, time);
 
@@ -120,19 +120,24 @@ function get_now_data(arr) {
     function main() {
 
         let rangeInput = document.getElementById("myRange");
-        let currentday = document.getElementById("currentday");
+        let currentTime = document.getElementById("currentTime");
         let waterlevel = document.getElementById("wlevel");
         let allwater = document.getElementById("wcontainer");
-        let debug = document.getElementById("debug");
+        let debugCode = document.getElementById("debug");
 
         let before = document.getElementById("before");
         let after = document.getElementById("after");
         let timebox = document.getElementById("time");
 
+        const debug = false;
+        rangeInput.hidden = !debug;
+        currentTime.hidden = !debug;
+
+
         const update = (time) => {
-            currentday.textContent = time;
-            let data = get_data_time(built, currentday.textContent);
-            debug.textContent = JSON.stringify(data);
+            currentTime.textContent = time;
+            let data = get_data_time(built, currentTime.textContent);
+            debugCode.textContent = JSON.stringify(data);
 
             waterlevel.style.height = (1 - data['height']) * 100 + '%';
 
@@ -143,17 +148,21 @@ function get_now_data(arr) {
             timebox.textContent = `Dia ${data['date']['day']}, ${data['date']['hour']}:${data['date']['minute']}`;
         };
 
-        currentday.textContent = rangeInput.value;
 
         rangeInput.addEventListener('change', function() {
             update(this.value);
         });
 
         const interval = setInterval(function() {
-            const val = rangeInput.value;
-            rangeInput.value = parseFloat(val) + 1;
-            update(val);
-        }, 10 * 1);
+            if (!debug) {
+                const data = get_now_data(built);
+                update(data['time']);
+            } else {
+                const val = rangeInput.value;
+                rangeInput.value = parseFloat(val) + 1;
+                update(val);
+            }
+        }, 100 * 1);
     }
 
 
